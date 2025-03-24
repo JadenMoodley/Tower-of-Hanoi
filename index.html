@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Game</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: slateblue; }
+        input, button, select { margin: 10px; padding: 10px; font-size: 16px; }
+        #leaderboardModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Tower of Hanoi!</h1>
+    
+    <label for="username">Enter Your Name:</label>
+    <input type="text" id="username" placeholder="Your Name">
+
+    <label for="diskSelect">Number of Disks:</label>
+    <select id="diskSelect">
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6" selected>6</option>
+        <option value="7">7</option>
+    </select>
+
+    <br>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="showLeaderboard()">View Leaderboard</button>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal">
+        <h2>🏆 Leaderboard 🏆</h2>
+        <table id="leaderboardTable" border="1" style="width:100%; text-align:center;">
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Time (s)</th>
+                <th>Moves</th>
+                <th>Disks</th>
+            </tr>
+        </table>
+        <br>
+        <button onclick="closeLeaderboard()">Close</button>
+    </div>
+
+    <script>
+        function startGame() {
+            let username = document.getElementById("username").value;
+            let numDisks = document.getElementById("diskSelect").value;
+
+            if (username.trim() === "") {
+                alert("Please enter your name.");
+                return;
+            }
+
+            // Store data in localStorage
+            localStorage.setItem("username", username);
+            localStorage.setItem("numDisks", numDisks);
+
+            // Redirect to the game page
+            window.location.href = "game.html";
+        }
+
+        function showLeaderboard() {
+            let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+            let table = document.getElementById("leaderboardTable");
+
+            // Clear existing rows except header
+            table.innerHTML = `<tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Time (s)</th>
+                <th>Moves</th>
+                <th>Disks</th>
+            </tr>`;
+
+            leaderboard.forEach((entry, index) => {
+                let row = table.insertRow();
+                row.insertCell(0).innerText = index + 1;
+                row.insertCell(1).innerText = entry.name;
+                row.insertCell(2).innerText = entry.time.toFixed(2);
+                row.insertCell(3).innerText = entry.moves;
+                row.insertCell(4).innerText = entry.disks;
+            });
+
+            document.getElementById("leaderboardModal").style.display = "block";
+        }
+
+        function closeLeaderboard() {
+            document.getElementById("leaderboardModal").style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
